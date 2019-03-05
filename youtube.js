@@ -1,71 +1,33 @@
 
+  // s = ytplayer.config.args.adaptive_fmts
+  s = ytplayer.config.args.url_encoded_fmt_stream_map
 
-function cria(){
+  k = decodeURIComponent(s)
+  corte = k.split("url=")
+  corte.shift()
+  d = []
+  estilo = "position:fixed;bottom:10px;left:10px;z-index:100;"
+  for(i=0;i<corte.length;i++){
+    try{
+      link = corte[i].split("\&")
+      if(i != corte.length-1){
+        link.pop()
+        link.pop()
+      }
 
-	estilo = "width:40px;height:40px;background-color:tomato;border-radius:100%;display:flex;justify-content:center;align-items:center;position:fixed;top:10px;right:300px;z-index:50;color:white;cursor:pointer;font-size:14;font-family:monospace;"
+      link = link.join("\&")
+      //.replace(/\&itag=\d+|,itag=\d+/g,"")
+      //.replace(/,itag=\d+/g,"")
+      //.replace(/\,/g,"")
+      //.replace(/\&itag=\d+/g,"")
+      d.push("<a target='blank' href='"+link+"'><button>"+i+"</button></a>")
+      console.log(d)
+    }catch(err){}
+  }
 
-	div = document.createElement("div");
-	div.id="bol"
-	div.setAttribute("style",estilo)
-	div.innerHTML = "mp3"
-
-	v = document.querySelector("#masthead > #container")
-
-	v.appendChild(div)
-
-	bol.onclick=function(){
-		url = window.location.href.match(/v=(.*)/)[1]
-		op()
-	}
-
-}
-
-window.onload=function(){
-	cria()
-}
-
-
-function op(){
-
-	
-	url = "https://www.youtube.com/get_video_info?video_id="+url;
-
-	x = new XMLHttpRequest()
-
-	x.open("GET",url,true);
-	x.send();
-
-	x.onreadystatechange =function(e){
-		if (this.readyState == 4 && this.status == 200){
-			s = e.target.response
-
-			u = s.split("&")
-			for(i in u){
-				if(u[i].match("url_encoded_fmt_stream_map")){
-					var v = u[i]
-					v = decodeURI(v)
-					v = decodeURIComponent(v)
-				}
-
-			}
-
-
-			link2 = v.split("url")
-			link2 = link2[2].replace(/&type.+?\".+\"/g,"")
-			link2 = link2.replace(/,+?=/g,"")
-			.replace(/,quality.+?\&/)
-			.replace(/,itag.+?\&/)
-			.replace(/undefined.*/,"")
-			.replace(/,.+?\".+\"/g,"")
-			link2 = link2.substring(1)
-
-			if(link2.match(/itag/g).length > 2)
-				link2 = link2.substr(0,link2.lastIndexOf("&itag"))
-
-			window.open(link2)
-
-
-		}
-
-	}
-}
+  d = d.join("")
+  div = document.createElement("div")
+  div.id="bloco"
+  div.setAttribute("style",estilo)
+  div.innerHTML = d
+  document.body.appendChild(div)
